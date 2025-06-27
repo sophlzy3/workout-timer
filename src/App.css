@@ -224,13 +224,13 @@ body {
 .body-small { font-size: var(--text-sm); }
 .body-xs { font-size: var(--text-xs); }
 
-/* Glassmorphism Card Component */
+/* Glass Card Component */
 .glass-card {
   background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
   border-radius: 1rem;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   box-shadow: var(--glass-shadow);
   transition: all var(--duration-normal) cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -238,11 +238,9 @@ body {
 }
 
 .glass-card:hover {
-  transform: scale(1.03);
-  border-color: var(--accent-primary);
-  box-shadow: 
-    var(--glass-shadow),
-    0 0 20px rgba(0, 212, 170, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .glass-card::before {
@@ -251,9 +249,33 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
-  opacity: 0.6;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* Glass Header Component */
+.glass-header {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--glass-border);
+  transition: all var(--duration-normal) cubic-bezier(0.4, 0, 0.2, 1);
+  padding: var(--space-3) 0;
+  margin-bottom: var(--space-4);
+}
+
+.glass-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  pointer-events: none;
 }
 
 /* Button Styles */
@@ -362,29 +384,6 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 var(--space-3);
-}
-
-.grid {
-  display: grid;
-  gap: var(--space-3);
-}
-
-.grid-cols-1 { grid-template-columns: 1fr; }
-.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
-.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
-.grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
-.grid-cols-12 { grid-template-columns: repeat(12, 1fr); }
-
-/* Responsive Grid */
-@media (min-width: 768px) {
-  .md\\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
-  .md\\:grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
-  .md\\:grid-cols-12 { grid-template-columns: repeat(12, 1fr); }
-}
-
-@media (min-width: 1024px) {
-  .lg\\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
-  .lg\\:grid-cols-12 { grid-template-columns: repeat(12, 1fr); }
 }
 
 /* Utility Classes */

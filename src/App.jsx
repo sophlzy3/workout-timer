@@ -1,13 +1,21 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button.jsx'
-import { Play, Plus, Download, Upload, Moon, Sun, Settings } from 'lucide-react'
+import { Timer, Plus, Download, Upload, Moon, Sun, Settings, MoreVertical, FileText, FileJson, ChevronDown, ChevronUp, Expand } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu.jsx'
 import './App.css'
 
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState(true)
+  const [isDarkMode, setIsDarkMode] = useState(false)
   const [workouts, setWorkouts] = useState([])
   const [activeView, setActiveView] = useState('dashboard') // dashboard, create, workout
   const [activeWorkout, setActiveWorkout] = useState(null)
+  const [isQuickActionsCollapsed, setIsQuickActionsCollapsed] = useState(false)
+  const [fullscreenExercise, setFullscreenExercise] = useState(null)
 
   // Load workouts from localStorage on component mount
   useEffect(() => {
@@ -54,12 +62,15 @@ function App() {
   return (
     <div className={`min-h-screen theme-transition ${isDarkMode ? 'dark' : ''}`}>
       {/* Header */}
-      <header className="container py-4">
-        <div className="glass-card p-4">
+      <header className="glass-header sticky top-0 z-50 border-b border-glass-border">
+        <div className="container py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-br from-accent-primary to-accent-coral rounded-lg flex items-center justify-center">
-                <Play className="w-5 h-5 text-charcoal" />
+                {/* <Timer className="w-5 h-5 text-charcoal" /> */}
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                  <text x="12" y="18" font-size="18" text-anchor="middle" fill="currentColor">🏋️</text>
+                </svg>
               </div>
               <h1 className="heading heading-3 text-off-white">Workout Timer Pro</h1>
             </div>
@@ -96,6 +107,7 @@ function App() {
             setActiveView={setActiveView}
             workouts={workouts}
             setWorkouts={setWorkouts}
+            setFullscreenExercise={setFullscreenExercise}
           />
         )}
         
@@ -107,6 +119,82 @@ function App() {
           />
         )}
       </main>
+      
+      {/* Fullscreen Exercise Overlay */}
+      {fullscreenExercise && (
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setFullscreenExercise(null)}
+        >
+          <div 
+            className="glass-card p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="heading heading-4 text-off-white">Exercise Details</h3>
+              <Button 
+                variant="ghost" 
+                className="p-2 h-8 w-8 rounded-full hover:bg-glass-bg"
+                onClick={() => setFullscreenExercise(null)}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </Button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block body-base font-medium mb-2 text-off-white">Exercise Name</label>
+                <p className="body-base text-muted-foreground">{fullscreenExercise.name}</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block body-base font-medium mb-2 text-off-white">Type</label>
+                  <p className="body-base text-muted-foreground">
+                    {fullscreenExercise.type === 'reps' ? 'Repetitions' : 'Duration'}
+                  </p>
+                </div>
+                
+                <div>
+                  <label className="block body-base font-medium mb-2 text-off-white">Sets</label>
+                  <p className="body-base text-muted-foreground">{fullscreenExercise.sets}</p>
+                </div>
+                
+                {fullscreenExercise.type === 'reps' ? (
+                  <div>
+                    <label className="block body-base font-medium mb-2 text-off-white">Reps per Set</label>
+                    <p className="body-base text-muted-foreground">{fullscreenExercise.reps}</p>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block body-base font-medium mb-2 text-off-white">Duration per Set</label>
+                    <p className="body-base text-muted-foreground">{fullscreenExercise.duration} seconds</p>
+                  </div>
+                )}
+                
+                <div>
+                  <label className="block body-base font-medium mb-2 text-off-white">Rest Between Sets</label>
+                  <p className="body-base text-muted-foreground">{fullscreenExercise.restBetweenSets} seconds</p>
+                </div>
+                
+                <div>
+                  <label className="block body-base font-medium mb-2 text-off-white">Rest After Exercise</label>
+                  <p className="body-base text-muted-foreground">{fullscreenExercise.restBetweenExercises} seconds</p>
+                </div>
+              </div>
+              
+              {fullscreenExercise.mediaUrl && (
+                <div>
+                  <label className="block body-base font-medium mb-2 text-off-white">Media</label>
+                  <p className="body-base text-muted-foreground">{fullscreenExercise.mediaUrl}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -114,6 +202,7 @@ function App() {
 // Dashboard View Component
 function DashboardView({ workouts, setActiveView, setWorkouts, startWorkout }) {
   const [importStatus, setImportStatus] = useState('')
+  const [isQuickActionsCollapsed, setIsQuickActionsCollapsed] = useState(true)
 
   const handleImportJSON = (event) => {
     const file = event.target.files[0]
@@ -276,65 +365,76 @@ function DashboardView({ workouts, setActiveView, setWorkouts, startWorkout }) {
     <div className="grid gap-6">
       {/* Quick Actions */}
       <div className="glass-card p-6">
-        <h2 className="heading heading-4 mb-4">Quick Actions</h2>
-        
-        {/* Status Message */}
-        {importStatus && (
-          <div className="mb-4 p-3 bg-accent-primary/20 border border-accent-primary/30 rounded-lg">
-            <p className="body-small text-accent-primary">{importStatus}</p>
-          </div>
-        )}
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-          <Button 
-            className="btn btn-primary"
-            onClick={() => setActiveView('create')}
-          >
-            <Plus className="w-4 h-4" />
-            Create Workout
+        <div className="flex justify-between items-center cursor-pointer" onClick={() => setIsQuickActionsCollapsed(!isQuickActionsCollapsed)}>
+          <h2 className="heading heading-4">Quick Actions</h2>
+          <Button variant="ghost" className="p-1 h-8 w-8 rounded-full hover:bg-glass-bg">
+            {isQuickActionsCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
           </Button>
+        </div>
+        
+        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isQuickActionsCollapsed ? 'max-h-0 opacity-0' : 'max-h-96 opacity-100'}`}>
+          {/* Status Message */}
+          {importStatus && (
+            <div className="mb-4 mt-4 p-3 bg-accent-primary/20 border border-accent-primary/30 rounded-lg">
+              <p className="body-small text-accent-primary">{importStatus}</p>
+            </div>
+          )}
           
-          <label className="btn cursor-pointer">
-            <Upload className="w-4 h-4" />
-            Import JSON
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-4 mt-4">
+            <Button 
+              className="btn btn-primary w-full max-w-[250px] mx-auto h-14"
+              onClick={() => setActiveView('create')}
+            >
+              <Plus className="w-4 h-4" />
+              Create Workout
+            </Button>
+            
+            <Button 
+              className="btn w-full max-w-[250px] mx-auto h-14"
+              onClick={() => document.getElementById('import-json-input').click()}
+            >
+              <Download className="w-4 h-4" />
+              Import JSON
+            </Button>
             <input 
+              id="import-json-input"
               type="file" 
               accept=".json" 
               onChange={handleImportJSON}
               className="hidden"
             />
-          </label>
-          
-          <Button 
-            className="btn"
-            onClick={handleExportJSON}
-            disabled={workouts.length === 0}
-          >
-            <Download className="w-4 h-4" />
-            Export JSON
-          </Button>
-          
-          <Button 
-            className="btn"
-            onClick={handleExportText}
-            disabled={workouts.length === 0}
-          >
-            <Download className="w-4 h-4" />
-            Export Text
-          </Button>
-        </div>
-        
-        {/* Additional Actions */}
-        {workouts.length > 0 && (
-          <div className="border-t border-glass-border pt-4">
+            
             <Button 
-              className="btn text-red-400 border-red-400 hover:bg-red-400 hover:text-white"
-              onClick={handleClearAllWorkouts}
+              className="btn w-full max-w-[250px] mx-auto h-14"
+              onClick={handleExportJSON}
+              disabled={workouts.length === 0}
             >
-              Clear All Workouts
+              <Upload className="w-4 h-4" />
+              Export JSON
+            </Button>
+            
+            <Button 
+              className="btn w-full max-w-[250px] mx-auto h-14"
+              onClick={handleExportText}
+              disabled={workouts.length === 0}
+            >
+              <Upload className="w-4 h-4" />
+              Export Text
             </Button>
           </div>
-        )}
+          
+          {/* Additional Actions */}
+          {workouts.length > 0 && (
+            <div className="border-t border-glass-border pt-4">
+              <Button 
+                className="btn text-red-400 border-red-400 hover:bg-red-400 hover:text-white"
+                onClick={handleClearAllWorkouts}
+              >
+                Clear All Workouts
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Workouts List */}
@@ -344,7 +444,7 @@ function DashboardView({ workouts, setActiveView, setWorkouts, startWorkout }) {
         {workouts.length === 0 ? (
           <div className="text-center py-8">
             <div className="w-16 h-16 bg-glass-bg rounded-full flex items-center justify-center mx-auto mb-4">
-              <Play className="w-8 h-8 text-accent-primary" />
+              <Timer className="w-8 h-8 text-accent-primary" />
             </div>
             <h3 className="heading heading-5 mb-2">No workouts yet</h3>
             <p className="body-base text-muted-foreground mb-4">
@@ -373,22 +473,22 @@ function DashboardView({ workouts, setActiveView, setWorkouts, startWorkout }) {
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="glass-card p-4 text-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <div className="glass-card p-4 text-center min-w-[120px]">
           <div className="text-2xl font-bold text-accent-primary mb-1">
             {workouts.length}
           </div>
           <div className="body-small text-muted-foreground">Total Workouts</div>
         </div>
         
-        <div className="glass-card p-4 text-center">
+        <div className="glass-card p-4 text-center min-w-[120px]">
           <div className="text-2xl font-bold text-accent-primary mb-1">
             {workouts.reduce((total, workout) => total + (workout.exercises?.length || 0), 0)}
           </div>
           <div className="body-small text-muted-foreground">Total Exercises</div>
         </div>
         
-        <div className="glass-card p-4 text-center">
+        <div className="glass-card p-4 text-center md:col-span-2 lg:col-span-1 min-w-[120px]">
           <div className="text-2xl font-bold text-accent-primary mb-1">0</div>
           <div className="body-small text-muted-foreground">Completed Sessions</div>
         </div>
@@ -407,52 +507,132 @@ function WorkoutCard({ workout, onStart, onEdit }) {
     return total + setTime + restTime + exerciseRest
   }, 0) || 0
 
+  const handleExportJSON = () => {
+    try {
+      const dataStr = JSON.stringify(workout, null, 2)
+      const dataBlob = new Blob([dataStr], { type: 'application/json' })
+      const url = URL.createObjectURL(dataBlob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `${workout.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}-${new Date().toISOString().split('T')[0]}.json`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error('Error exporting workout:', error)
+    }
+  }
+
+  const handleExportText = () => {
+    try {
+      let textContent = `# ${workout.name}\n\n`
+      textContent += `**Created:** ${new Date(workout.createdAt).toLocaleDateString()}\n`
+      textContent += `**Exercises:** ${workout.exercises.length}\n`
+      textContent += `**Estimated Duration:** ~${Math.round(estimatedTime / 60)} minutes\n\n`
+
+      textContent += '## Exercises:\n\n'
+      workout.exercises.forEach((exercise, index) => {
+        textContent += `${index + 1}. **${exercise.name}**\n`
+        textContent += `   - Type: ${exercise.type === 'reps' ? 'Repetitions' : 'Duration'}\n`
+        if (exercise.type === 'reps') {
+          textContent += `   - Reps per set: ${exercise.reps}\n`
+        } else {
+          textContent += `   - Duration per set: ${exercise.duration} seconds\n`
+        }
+        textContent += `   - Sets: ${exercise.sets}\n`
+        textContent += `   - Rest between sets: ${exercise.restBetweenSets} seconds\n`
+        textContent += `   - Rest after exercise: ${exercise.restBetweenExercises} seconds\n`
+        if (exercise.mediaUrl) {
+          textContent += `   - Media: ${exercise.mediaUrl}\n`
+        }
+        textContent += '\n'
+      })
+
+      const dataBlob = new Blob([textContent], { type: 'text/plain' })
+      const url = URL.createObjectURL(dataBlob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `${workout.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}-${new Date().toISOString().split('T')[0]}.txt`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error('Error exporting workout:', error)
+    }
+  }
+
   return (
-    <div className="glass-card p-4 hover:scale-[1.02] transition-transform">
-      <div className="flex justify-between items-start mb-3">
-        <div>
-          <h3 className="heading heading-5 mb-1">{workout.name || 'Untitled Workout'}</h3>
-          <p className="body-small text-muted-foreground">
-            {totalExercises} exercises • ~{Math.round(estimatedTime / 60)} min
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button className="btn btn-primary" onClick={onStart}>
-            <Play className="w-4 h-4" />
-            Start
-          </Button>
-          <Button className="btn" onClick={onEdit}>
-            Edit
-          </Button>
-        </div>
+    <div className="glass-card p-4 hover:scale-[1.01] transition-transform relative">
+      {/* Export Dropdown - Top Right Corner */}
+      <div className="absolute top-3 right-3 z-10">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0 rounded-full bg-glass-bg/50 hover:bg-glass-bg border border-glass-border">
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="glass-card border border-glass-border">
+            <DropdownMenuItem onClick={handleExportJSON} className="cursor-pointer">
+              <FileJson className="mr-2 h-4 w-4" />
+              Export as JSON
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleExportText} className="cursor-pointer">
+              <FileText className="mr-2 h-4 w-4" />
+              Export as Text
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
-      
-      {workout.exercises && workout.exercises.length > 0 && (
-        <div className="space-y-2">
-          <div className="divider"></div>
-          <div className="grid gap-1">
-            {workout.exercises.slice(0, 3).map((exercise, index) => (
-              <div key={index} className="flex justify-between body-small">
-                <span>{exercise.name}</span>
-                <span className="text-muted-foreground">
-                  {exercise.sets} × {exercise.reps || exercise.duration + 's'}
-                </span>
-              </div>
-            ))}
-            {workout.exercises.length > 3 && (
-              <div className="body-small text-muted-foreground">
-                +{workout.exercises.length - 3} more exercises
-              </div>
-            )}
+
+      {/* Main Content */}
+      <div className="pr-12">
+        <div className="flex justify-between items-start mb-3">
+          <div className="flex-1 min-w-0">
+            <h3 className="heading heading-5 mb-1 truncate">{workout.name || 'Untitled Workout'}</h3>
+            <p className="body-small text-muted-foreground">
+              {totalExercises} exercises • ~{Math.round(estimatedTime / 60)} min
+            </p>
+          </div>
+          <div className="flex gap-2 flex-shrink-0 ml-3">
+            <Button className="btn btn-primary" onClick={onStart}>
+              <Timer className="w-4 h-4" />
+              Start
+            </Button>
+            <Button className="btn" onClick={onEdit}>
+              Edit
+            </Button>
           </div>
         </div>
-      )}
+        
+        {workout.exercises && workout.exercises.length > 0 && (
+          <div className="space-y-2">
+            <div className="divider"></div>
+            <div className="grid gap-1">
+              {workout.exercises.slice(0, 3).map((exercise, index) => (
+                <div key={index} className="flex justify-between body-small">
+                  <span className="truncate mr-2">{exercise.name}</span>
+                  <span className="text-muted-foreground flex-shrink-0">
+                    {exercise.sets} × {exercise.reps || exercise.duration + 's'}
+                  </span>
+                </div>
+              ))}
+              {workout.exercises.length > 3 && (
+                <div className="body-small text-muted-foreground">
+                  +{workout.exercises.length - 3} more exercises
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
 
 // Create Workout View Component
-function CreateWorkoutView({ setActiveView, workouts, setWorkouts }) {
+function CreateWorkoutView({ setActiveView, workouts, setWorkouts, setFullscreenExercise }) {
   const [workoutName, setWorkoutName] = useState('')
   const [exercises, setExercises] = useState([])
   const [editingIndex, setEditingIndex] = useState(-1)
@@ -565,6 +745,7 @@ function CreateWorkoutView({ setActiveView, workouts, setWorkouts }) {
                 onSave={() => setEditingIndex(-1)}
                 onRemove={() => removeExercise(index)}
                 onUpdate={(field, value) => updateExercise(index, field, value)}
+                setFullscreenExercise={setFullscreenExercise}
               />
             ))}
           </div>
@@ -607,7 +788,7 @@ function CreateWorkoutView({ setActiveView, workouts, setWorkouts }) {
 }
 
 // Exercise Card Component
-function ExerciseCard({ exercise, index, isEditing, onEdit, onSave, onRemove, onUpdate }) {
+function ExerciseCard({ exercise, index, isEditing, onEdit, onSave, onRemove, onUpdate, setFullscreenExercise }) {
   if (isEditing) {
     return (
       <div className="glass-card p-4 border-accent-primary">
@@ -733,28 +914,39 @@ function ExerciseCard({ exercise, index, isEditing, onEdit, onSave, onRemove, on
   }
 
   return (
-    <div className="glass-card p-4 hover:scale-[1.01] transition-transform cursor-pointer" onClick={onEdit}>
+    <div className="glass-card p-4 hover:scale-[1.01] transition-transform relative">
       <div className="flex justify-between items-start">
-        <div className="flex-1">
-          <h4 className="heading heading-5 mb-1">
-            {exercise.name || `Exercise ${index + 1}`}
-          </h4>
-          <div className="flex flex-wrap gap-4 body-small text-muted-foreground">
-            <span>
-              {exercise.sets} sets × {exercise.type === 'reps' ? `${exercise.reps} reps` : `${exercise.duration}s`}
-            </span>
-            <span>Rest: {exercise.restBetweenSets}s between sets</span>
-            <span>Rest after: {exercise.restBetweenExercises}s</span>
-          </div>
-          {exercise.mediaUrl && (
-            <div className="mt-2">
-              <span className="body-xs text-accent-primary">📹 Media attached</span>
+        <div className="flex-1 cursor-pointer" onClick={onEdit}>
+          <h4 className="heading heading-5 mb-1">{exercise.name || 'Untitled Exercise'}</h4>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 body-small text-muted-foreground">
+            <div>
+              <span className="font-medium">Type:</span> {exercise.type === 'reps' ? 'Repetitions' : 'Duration'}
             </div>
-          )}
+            <div>
+              <span className="font-medium">Sets:</span> {exercise.sets}
+            </div>
+            <div>
+              <span className="font-medium">
+                {exercise.type === 'reps' ? 'Reps:' : 'Duration:'}
+              </span> {exercise.type === 'reps' ? exercise.reps : `${exercise.duration}s`}
+            </div>
+            <div>
+              <span className="font-medium">Rest:</span> {exercise.restBetweenSets}s
+            </div>
+          </div>
         </div>
+        
         <div className="flex gap-2 ml-4">
-          <Button className="btn p-2" onClick={(e) => { e.stopPropagation(); onEdit(); }}>
-            Edit
+          <Button 
+            variant="ghost" 
+            className="p-2 h-10 w-10 rounded-full hover:bg-glass-bg border border-glass-border bg-glass-bg/30"
+            onClick={(e) => {
+              e.stopPropagation();
+              setFullscreenExercise(exercise);
+            }}
+            title="View fullscreen"
+          >
+            <Expand className="w-5 h-5" />
           </Button>
         </div>
       </div>
