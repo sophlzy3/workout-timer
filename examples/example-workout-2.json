@@ -1,0 +1,55 @@
+[
+  {
+    "id": 1640995260000,
+    "name": "HIIT Cardio Blast",
+    "exercises": [
+      {
+        "name": "Jumping Jacks",
+        "type": "duration",
+        "duration": 45,
+        "sets": 4,
+        "restBetweenSets": 15,
+        "restBetweenExercises": 60,
+        "mediaUrl": "https://example.com/jumping-jacks.gif"
+      },
+      {
+        "name": "Burpees",
+        "type": "reps",
+        "reps": 8,
+        "sets": 3,
+        "restBetweenSets": 30,
+        "restBetweenExercises": 60,
+        "mediaUrl": "https://example.com/burpees.gif"
+      },
+      {
+        "name": "Mountain Climbers",
+        "type": "duration",
+        "duration": 30,
+        "sets": 3,
+        "restBetweenSets": 20,
+        "restBetweenExercises": 60,
+        "mediaUrl": ""
+      },
+      {
+        "name": "High Knees",
+        "type": "duration",
+        "duration": 30,
+        "sets": 3,
+        "restBetweenSets": 15,
+        "restBetweenExercises": 60,
+        "mediaUrl": "https://example.com/high-knees.gif"
+      },
+      {
+        "name": "Rest and Stretch",
+        "type": "duration",
+        "duration": 120,
+        "sets": 1,
+        "restBetweenSets": 0,
+        "restBetweenExercises": 0,
+        "mediaUrl": ""
+      }
+    ],
+    "createdAt": "2021-12-31T12:01:00.000Z"
+  }
+]
+

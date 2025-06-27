@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1640995200000,
+    "name": "Full Body Strength",
+    "exercises": [
+      {
+        "name": "Push-ups",
+        "type": "reps",
+        "reps": 12,
+        "sets": 3,
+        "restBetweenSets": 45,
+        "restBetweenExercises": 90,
+        "mediaUrl": "https://example.com/pushups.gif"
+      },
+      {
+        "name": "Squats",
+        "type": "reps",
+        "reps": 15,
+        "sets": 3,
+        "restBetweenSets": 45,
+        "restBetweenExercises": 90,
+        "mediaUrl": ""
+      },
+      {
+        "name": "Plank",
+        "type": "duration",
+        "duration": 30,
+        "sets": 3,
+        "restBetweenSets": 30,
+        "restBetweenExercises": 90,
+        "mediaUrl": "https://example.com/plank.gif"
+      },
+      {
+        "name": "Lunges",
+        "type": "reps",
+        "reps": 10,
+        "sets": 2,
+        "restBetweenSets": 45,
+        "restBetweenExercises": 90,
+        "mediaUrl": ""
+      }
+    ],
+    "createdAt": "2021-12-31T12:00:00.000Z"
+  }
+]
+
