@@ -11,26 +11,46 @@ A modern, full-featured workout timer application with beautiful glassmorphism d
 - **Rest Periods**: Configurable rest times between sets and exercises
 - **Live Workout Mode**: Real-time workout tracking with phase transitions
 
-### 🎨 Modern UI/UX
-- **Glassmorphism Design**: Beautiful frosted glass effects
-- **Dark/Light Theme**: Toggle between themes
-- **Responsive Layout**: Works perfectly on desktop, tablet, and mobile
-- **Smooth Animations**: Fluid transitions and hover effects
-- **Fullscreen Exercise View**: Detailed exercise information in overlay
+### Creating a Workout
+1. Click "Create Workout" in the Quick Actions section
+2. Enter a workout name
+3. Add exercises with the "Add Exercise" button
+4. Configure each exercise:
+   - **Name**: Exercise name
+   - **Type**: Repetitions or Duration
+   - **Sets**: Number of sets
+   - **Reps/Duration**: Target reps or time per set
+   - **Rest Times**: Rest between sets and after exercise
+   - **Media URL**: Optional link to exercise demonstration
 
+### Starting a Workout
+1. From the dashboard, click "Start" on any workout card
+2. The workout begins with a 5-second warmup
+3. Follow the on-screen prompts for each phase:
+   - **Exercise Phase**: Complete the exercise
+   - **Rest Phase**: Take your rest period
+   - **Complete**: Workout finished!
+
+### Managing Workouts
+- **Edit**: Click "Edit" on any workout card
+- **Export**: Use the dropdown menu on workout cards to export individual workouts
+- **Bulk Export**: Use Quick Actions to export all workouts
+- **Import**: Use Quick Actions to import workout files
+
+- 
 ### 📊 Workout Management
 - **Import/Export**: JSON and text format support
 - **Workout Library**: Save and organize multiple workouts
 - **Exercise Details**: Comprehensive exercise information tracking
 - **Progress Tracking**: Monitor workout completion statistics
 
-### 🔧 Advanced Features
-- **Collapsible Sections**: Clean, organized interface
-- **Export Options**: Individual workout and bulk export
-- **Media Support**: Add URLs for exercise demonstrations
-- **Keyboard Shortcuts**: Efficient navigation and control
+## 🚀 Development 
 
-## 🚀 Getting Started
+### Development Guidelines
+- Follow the existing code style
+- Add tests for new features
+- Update documentation as needed
+- Ensure responsive design works on all devices
 
 ### Prerequisites
 - Node.js (v16 or higher)
@@ -60,40 +80,6 @@ A modern, full-featured workout timer application with beautiful glassmorphism d
 
 4. **Open your browser**
    Navigate to `http://localhost:5173` (or the port shown in your terminal)
-
-## 📱 Usage
-
-### Creating a Workout
-1. Click "Create Workout" in the Quick Actions section
-2. Enter a workout name
-3. Add exercises with the "Add Exercise" button
-4. Configure each exercise:
-   - **Name**: Exercise name
-   - **Type**: Repetitions or Duration
-   - **Sets**: Number of sets
-   - **Reps/Duration**: Target reps or time per set
-   - **Rest Times**: Rest between sets and after exercise
-   - **Media URL**: Optional link to exercise demonstration
-
-### Starting a Workout
-1. From the dashboard, click "Start" on any workout card
-2. The workout begins with a 5-second warmup
-3. Follow the on-screen prompts for each phase:
-   - **Exercise Phase**: Complete the exercise
-   - **Rest Phase**: Take your rest period
-   - **Complete**: Workout finished!
-
-### Managing Workouts
-- **Edit**: Click "Edit" on any workout card
-- **Export**: Use the dropdown menu on workout cards to export individual workouts
-- **Bulk Export**: Use Quick Actions to export all workouts
-- **Import**: Use Quick Actions to import workout files
-
-# Development Guidelines
-- Follow the existing code style
-- Add tests for new features
-- Update documentation as needed
-- Ensure responsive design works on all devices
 
 ## 📄 License
 
