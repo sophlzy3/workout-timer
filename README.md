@@ -89,41 +89,7 @@ A modern, full-featured workout timer application with beautiful glassmorphism d
 - **Bulk Export**: Use Quick Actions to export all workouts
 - **Import**: Use Quick Actions to import workout files
 
-## 🚀 Deployment
-
-### Build for Production
-```bash
-npm run build
-# or
-pnpm build
-```
-
-### Preview Production Build
-```bash
-npm run preview
-# or
-pnpm preview
-```
-
-### Docker Deployment
-```bash
-# Build Docker image
-docker build -t workout-timer-pro .
-
-# Run container
-docker run -p 3000:80 workout-timer-pro
-```
-
-## 🔧 Development
-
-### Available Scripts
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint issues
-
-### Development Guidelines
+# Development Guidelines
 - Follow the existing code style
 - Add tests for new features
 - Update documentation as needed
@@ -131,21 +97,7 @@ docker run -p 3000:80 workout-timer-pro
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **Glassmorphism Design**: Inspired by modern UI trends
-- **React Community**: For the amazing ecosystem
-- **Tailwind CSS**: For the utility-first approach
-- **Lucide Icons**: For the beautiful icon set
-
-## 📞 Support
-
-If you have any questions or need help:
-- Open an issue on GitHub
-- Check the documentation
-- Review existing issues and discussions
+This project is licensed under the Apache 2.5 License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
