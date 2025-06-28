@@ -16,6 +16,7 @@ function App() {
   const [activeWorkout, setActiveWorkout] = useState(null)
   const [isQuickActionsCollapsed, setIsQuickActionsCollapsed] = useState(false)
   const [fullscreenExercise, setFullscreenExercise] = useState(null)
+  const [editingWorkout, setEditingWorkout] = useState(null)
 
   // Load workouts from localStorage on component mount
   useEffect(() => {
@@ -99,6 +100,8 @@ function App() {
             setActiveView={setActiveView}
             setWorkouts={setWorkouts}
             startWorkout={startWorkout}
+            editingWorkout={editingWorkout}
+            setEditingWorkout={setEditingWorkout}
           />
         )}
         
@@ -108,6 +111,8 @@ function App() {
             workouts={workouts}
             setWorkouts={setWorkouts}
             setFullscreenExercise={setFullscreenExercise}
+            editingWorkout={editingWorkout}
+            setEditingWorkout={setEditingWorkout}
           />
         )}
         
@@ -200,7 +205,7 @@ function App() {
 }
 
 // Dashboard View Component
-function DashboardView({ workouts, setActiveView, setWorkouts, startWorkout }) {
+function DashboardView({ workouts, setActiveView, setWorkouts, startWorkout, editingWorkout, setEditingWorkout }) {
   const [importStatus, setImportStatus] = useState('')
   const [isQuickActionsCollapsed, setIsQuickActionsCollapsed] = useState(true)
 
@@ -465,7 +470,10 @@ function DashboardView({ workouts, setActiveView, setWorkouts, startWorkout }) {
                 key={index} 
                 workout={workout} 
                 onStart={() => startWorkout(workout)}
-                onEdit={() => setActiveView('create')}
+                onEdit={() => {
+                  setEditingWorkout(workout)
+                  setActiveView('create')
+                }}
               />
             ))}
           </div>
@@ -632,10 +640,21 @@ function WorkoutCard({ workout, onStart, onEdit }) {
 }
 
 // Create Workout View Component
-function CreateWorkoutView({ setActiveView, workouts, setWorkouts, setFullscreenExercise }) {
+function CreateWorkoutView({ setActiveView, workouts, setWorkouts, setFullscreenExercise, editingWorkout, setEditingWorkout }) {
   const [workoutName, setWorkoutName] = useState('')
   const [exercises, setExercises] = useState([])
   const [editingIndex, setEditingIndex] = useState(-1)
+
+  // Initialize form with existing workout data when editing
+  useEffect(() => {
+    if (editingWorkout) {
+      setWorkoutName(editingWorkout.name)
+      setExercises([...editingWorkout.exercises])
+    } else {
+      setWorkoutName('')
+      setExercises([])
+    }
+  }, [editingWorkout])
 
   const addExercise = () => {
     const newExercise = {
@@ -674,14 +693,31 @@ function CreateWorkoutView({ setActiveView, workouts, setWorkouts, setFullscreen
       return
     }
 
-    const newWorkout = {
-      id: Date.now(),
+    const workoutData = {
+      id: editingWorkout ? editingWorkout.id : Date.now(),
       name: workoutName,
       exercises: exercises.filter(ex => ex.name.trim()),
-      createdAt: new Date().toISOString()
+      createdAt: editingWorkout ? editingWorkout.createdAt : new Date().toISOString()
     }
 
-    setWorkouts([...workouts, newWorkout])
+    if (editingWorkout) {
+      // Update existing workout
+      const updatedWorkouts = workouts.map(w => 
+        w.id === editingWorkout.id ? workoutData : w
+      )
+      setWorkouts(updatedWorkouts)
+    } else {
+      // Create new workout
+      setWorkouts([...workouts, workoutData])
+    }
+
+    // Reset editing state and return to dashboard
+    setEditingWorkout(null)
+    setActiveView('dashboard')
+  }
+
+  const handleCancel = () => {
+    setEditingWorkout(null)
     setActiveView('dashboard')
   }
 
@@ -690,13 +726,13 @@ function CreateWorkoutView({ setActiveView, workouts, setWorkouts, setFullscreen
       {/* Header */}
       <div className="glass-card p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="heading heading-3">Create New Workout</h2>
+          <h2 className="heading heading-3">{editingWorkout ? 'Edit Workout' : 'Create New Workout'}</h2>
           <div className="flex gap-3">
-            <Button className="btn" onClick={() => setActiveView('dashboard')}>
+            <Button className="btn" onClick={handleCancel}>
               Cancel
             </Button>
             <Button className="btn btn-primary" onClick={saveWorkout}>
-              Save Workout
+              {editingWorkout ? 'Update Workout' : 'Save Workout'}
             </Button>
           </div>
         </div>
