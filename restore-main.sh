@@ -13,6 +13,18 @@ if [ "$CURRENT_BRANCH" != "main" ]; then
     git checkout main
 fi
 
+# Ensure lib/utils.js exists
+echo "🔧 Ensuring lib/utils.js exists..."
+mkdir -p src/lib
+cat > src/lib/utils.js << 'EOF'
+import { clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs) {
+  return twMerge(clsx(inputs))
+}
+EOF
+
 # Restore @/ imports
 echo "🔧 Restoring @/ imports..."
 node scripts/prepare-static-export.js --main-branch
