@@ -192,8 +192,47 @@ function App() {
               
               {fullscreenExercise.mediaUrl && (
                 <div>
-                  <label className="block body-base font-medium mb-2 text-off-white">Media</label>
-                  <p className="body-base text-muted-foreground">{fullscreenExercise.mediaUrl}</p>
+                  <label className="block body-base font-medium mb-2 text-off-white">Media Preview</label>
+                  <div className="relative w-full h-[300px] rounded-lg overflow-hidden bg-glass-bg border border-glass-border">
+                    {fullscreenExercise.mediaUrl.match(/\.(gif|png|jpg|jpeg|webp|svg)$/i) ? (
+                      <img 
+                        src={fullscreenExercise.mediaUrl} 
+                        alt={`${fullscreenExercise.name} demonstration`}
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                    ) : fullscreenExercise.mediaUrl.match(/\.(mp4|webm|ogg)$/i) ? (
+                      <video 
+                        src={fullscreenExercise.mediaUrl}
+                        className="w-full h-full object-contain"
+                        controls
+                        loop
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    
+                    {/* Fallback for unsupported media or loading errors */}
+                    <div 
+                      className="absolute inset-0 flex items-center justify-center bg-glass-bg text-muted-foreground"
+                      style={{ display: fullscreenExercise.mediaUrl.match(/\.(gif|png|jpg|jpeg|webp|svg|mp4|webm|ogg)$/i) ? 'none' : 'flex' }}
+                    >
+                      <div className="text-center">
+                        <div className="w-12 h-12 mx-auto mb-2">
+                          <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                        <p className="body-base">Media Preview</p>
+                        <p className="body-small text-muted-foreground mt-1">{fullscreenExercise.mediaUrl}</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -1015,6 +1054,51 @@ function ExerciseCard({ exercise, index, isEditing, onEdit, onSave, onRemove, on
                 <span className="font-medium">Rest:</span> {exercise.restBetweenSets}s
               </div>
             </div>
+            
+            {/* Media Preview */}
+            {exercise.mediaUrl && (
+              <div className="mt-3">
+                <div className="relative w-full max-w-[200px] h-[120px] rounded-lg overflow-hidden bg-glass-bg border border-glass-border">
+                  {exercise.mediaUrl.match(/\.(gif|png|jpg|jpeg|webp|svg)$/i) ? (
+                    <img 
+                      src={exercise.mediaUrl} 
+                      alt={`${exercise.name} demonstration`}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
+                    />
+                  ) : exercise.mediaUrl.match(/\.(mp4|webm|ogg)$/i) ? (
+                    <video 
+                      src={exercise.mediaUrl}
+                      className="w-full h-full object-cover"
+                      muted
+                      loop
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  
+                  {/* Fallback for unsupported media or loading errors */}
+                  <div 
+                    className="absolute inset-0 flex items-center justify-center bg-glass-bg text-muted-foreground"
+                    style={{ display: exercise.mediaUrl.match(/\.(gif|png|jpg|jpeg|webp|svg|mp4|webm|ogg)$/i) ? 'none' : 'flex' }}
+                  >
+                    <div className="text-center">
+                      <div className="w-8 h-8 mx-auto mb-1">
+                        <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                      <p className="text-xs">Media Preview</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         
@@ -1271,12 +1355,46 @@ function WorkoutView({ workout, setActiveView, setWorkouts }) {
           {/* Media Display */}
           {currentExercise && currentExercise.mediaUrl && currentPhase === 'exercise' && (
             <div className="mb-6">
-              <img 
-                src={currentExercise.mediaUrl} 
-                alt={`${currentExercise.name} demonstration`}
-                className="max-w-full max-h-48 mx-auto rounded-lg"
-                onError={(e) => { e.target.style.display = 'none' }}
-              />
+              <div className="relative max-w-full max-h-64 mx-auto rounded-lg overflow-hidden bg-glass-bg border border-glass-border">
+                {currentExercise.mediaUrl.match(/\.(gif|png|jpg|jpeg|webp|svg)$/i) ? (
+                  <img 
+                    src={currentExercise.mediaUrl} 
+                    alt={`${currentExercise.name} demonstration`}
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                ) : currentExercise.mediaUrl.match(/\.(mp4|webm|ogg)$/i) ? (
+                  <video 
+                    src={currentExercise.mediaUrl}
+                    className="w-full h-full object-contain"
+                    autoPlay
+                    muted
+                    loop
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                ) : null}
+                
+                {/* Fallback for unsupported media or loading errors */}
+                <div 
+                  className="absolute inset-0 flex items-center justify-center bg-glass-bg text-muted-foreground"
+                  style={{ display: currentExercise.mediaUrl.match(/\.(gif|png|jpg|jpeg|webp|svg|mp4|webm|ogg)$/i) ? 'none' : 'flex' }}
+                >
+                  <div className="text-center">
+                    <div className="w-8 h-8 mx-auto mb-1">
+                      <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <p className="text-xs">Media Preview</p>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 

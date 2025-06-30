@@ -40,7 +40,7 @@ git merge main
 
 # Prepare for static export (convert path aliases to relative paths)
 echo "🔧 Preparing for static export..."
-node scripts/prepare-static-export.js
+node scripts/prepare-static-export.js --static-export
 
 # Test the build
 echo "🧪 Testing build..."
@@ -63,4 +63,19 @@ echo "🌐 Your site will be available at: https://yourusername.github.io/workou
 echo "🔄 Switching back to main branch..."
 git checkout main
 
-echo "🎉 Deployment process complete!" 
+# Restore main branch imports
+echo "🔧 Restoring main branch imports..."
+node scripts/prepare-static-export.js --main-branch
+
+# Test the build on main
+echo "🧪 Testing build on main..."
+npm run build
+
+# Commit the restored imports
+echo "💾 Committing restored imports..."
+git add .
+git commit -m "Restore @/ imports for main branch"
+git push origin main
+
+echo "🎉 Deployment process complete!"
+echo "✅ Main branch imports have been restored and tested." 

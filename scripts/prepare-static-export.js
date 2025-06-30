@@ -26,12 +26,12 @@ function findJsxFiles(dir) {
   return files;
 }
 
-// Function to fix imports in a file
-function fixImports(filePath) {
+// Function to fix imports in a file for static export
+function fixImportsForStaticExport(filePath) {
   let content = fs.readFileSync(filePath, 'utf8');
   let modified = false;
   
-  // Fix @/ imports to relative paths
+  // Fix @/ imports to relative paths only for static export
   const importRegex = /from\s+['"]@\/([^'"]+)['"]/g;
   let match;
   
@@ -49,17 +49,68 @@ function fixImports(filePath) {
   }
 }
 
-// Main execution
-console.log('Preparing static-export branch...');
-
-const srcDir = path.join(__dirname, '..', 'src');
-const jsxFiles = findJsxFiles(srcDir);
-
-console.log(`Found ${jsxFiles.length} JSX files to process...`);
-
-for (const file of jsxFiles) {
-  fixImports(file);
+// Function to restore imports for main branch
+function restoreImportsForMain(filePath) {
+  let content = fs.readFileSync(filePath, 'utf8');
+  let modified = false;
+  
+  // Convert relative imports back to @/ imports for main branch
+  const relativeImportRegex = /from\s+['"]\.\.\/\.\.\/lib\/utils\.js['"]/g;
+  if (relativeImportRegex.test(content)) {
+    content = content.replace(relativeImportRegex, `from '@/lib/utils'`);
+    modified = true;
+  }
+  
+  // Also handle other common relative imports that should be @/ imports
+  const otherRelativeRegex = /from\s+['"]\.\.\/\.\.\/([^'"]+)['"]/g;
+  let match;
+  while ((match = otherRelativeRegex.exec(content)) !== null) {
+    const importPath = match[1];
+    const newImport = `from '@/${importPath}'`;
+    content = content.replace(match[0], newImport);
+    modified = true;
+  }
+  
+  if (modified) {
+    fs.writeFileSync(filePath, content);
+    console.log(`Restored @/ imports in: ${filePath}`);
+  }
 }
 
-console.log('Static export preparation complete!');
-console.log('All @/ imports have been converted to relative imports.'); 
+// Main execution
+const isStaticExport = process.argv.includes('--static-export');
+const isMainBranch = process.argv.includes('--main-branch');
+
+if (isStaticExport) {
+  console.log('Preparing static-export branch...');
+  
+  const srcDir = path.join(__dirname, '..', 'src');
+  const jsxFiles = findJsxFiles(srcDir);
+  
+  console.log(`Found ${jsxFiles.length} JSX files to process...`);
+  
+  for (const file of jsxFiles) {
+    fixImportsForStaticExport(file);
+  }
+  
+  console.log('Static export preparation complete!');
+  console.log('All @/ imports have been converted to relative imports.');
+} else if (isMainBranch) {
+  console.log('Restoring main branch imports...');
+  
+  const srcDir = path.join(__dirname, '..', 'src');
+  const jsxFiles = findJsxFiles(srcDir);
+  
+  console.log(`Found ${jsxFiles.length} JSX files to process...`);
+  
+  for (const file of jsxFiles) {
+    restoreImportsForMain(file);
+  }
+  
+  console.log('Main branch restoration complete!');
+  console.log('All relative imports have been converted back to @/ imports.');
+} else {
+  console.log('Usage:');
+  console.log('  node scripts/prepare-static-export.js --static-export  # For static export branch');
+  console.log('  node scripts/prepare-static-export.js --main-branch    # For main branch');
+} 
