@@ -49,6 +49,29 @@ function fixImportsForStaticExport(filePath) {
   }
 }
 
+// Function to ensure lib/utils.js exists
+function ensureUtilsFileExists() {
+  const utilsPath = path.join(__dirname, '..', 'src', 'lib', 'utils.js');
+  const utilsDir = path.dirname(utilsPath);
+  
+  // Create lib directory if it doesn't exist
+  if (!fs.existsSync(utilsDir)) {
+    fs.mkdirSync(utilsDir, { recursive: true });
+  }
+  
+  // Create utils.js if it doesn't exist
+  if (!fs.existsSync(utilsPath)) {
+    const utilsContent = `import { clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs) {
+  return twMerge(clsx(inputs))
+}`;
+    fs.writeFileSync(utilsPath, utilsContent);
+    console.log('Created lib/utils.js file');
+  }
+}
+
 // Function to restore imports for main branch
 function restoreImportsForMain(filePath) {
   let content = fs.readFileSync(filePath, 'utf8');
@@ -84,6 +107,9 @@ const isMainBranch = process.argv.includes('--main-branch');
 if (isStaticExport) {
   console.log('Preparing static-export branch...');
   
+  // Ensure lib/utils.js exists before converting imports
+  ensureUtilsFileExists();
+  
   const srcDir = path.join(__dirname, '..', 'src');
   const jsxFiles = findJsxFiles(srcDir);
   
@@ -97,6 +123,9 @@ if (isStaticExport) {
   console.log('All @/ imports have been converted to relative imports.');
 } else if (isMainBranch) {
   console.log('Restoring main branch imports...');
+  
+  // Ensure lib/utils.js exists before restoring imports
+  ensureUtilsFileExists();
   
   const srcDir = path.join(__dirname, '..', 'src');
   const jsxFiles = findJsxFiles(srcDir);
