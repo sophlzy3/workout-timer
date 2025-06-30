@@ -503,7 +503,7 @@ function DashboardView({ workouts, setActiveView, setWorkouts, startWorkout, edi
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        <div className="glass-card p-4 text-center min-w-[120px]">
+        <div className="glass-card p-4 text-center min-w-[100px]">
           <div className="text-2xl font-bold text-accent-primary mb-1">
             {workouts.length}
           </div>
