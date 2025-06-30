@@ -1,8 +1,8 @@
 # Workout Timer 🏋️
 A modern, full-featured workout timer built with React, Vite, and Tailwind CSS.
 
-[dark mode](/public/screenshots/preview_dark.png)
-[light mode screenshot](/public/screenshots/preview_light.png)
+![dark mode](/public/screenshots/preview_dark.png)
+![light mode screenshot](/public/screenshots/preview_light.png)
 
 ## ✨ Features
 - Create custom workouts with multiple exercises
