@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button.jsx'
-import { Timer, Plus, Download, Upload, Moon, Sun, Settings, MoreVertical, FileText, FileJson, ChevronDown, ChevronUp, Expand } from 'lucide-react'
+import { Timer, Plus, Download, Upload, Moon, Sun, Settings, MoreVertical, FileText, FileJson, ChevronDown, ChevronUp, Expand, GripVertical, Trash2 } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -207,7 +207,6 @@ function App() {
 // Dashboard View Component
 function DashboardView({ workouts, setActiveView, setWorkouts, startWorkout, editingWorkout, setEditingWorkout }) {
   const [importStatus, setImportStatus] = useState('')
-  const [isQuickActionsCollapsed, setIsQuickActionsCollapsed] = useState(true)
 
   const handleImportJSON = (event) => {
     const file = event.target.files[0]
@@ -368,83 +367,47 @@ function DashboardView({ workouts, setActiveView, setWorkouts, startWorkout, edi
 
   return (
     <div className="grid gap-6">
-      {/* Quick Actions */}
-      <div className="glass-card p-6">
-        <div className="flex justify-between items-center cursor-pointer" onClick={() => setIsQuickActionsCollapsed(!isQuickActionsCollapsed)}>
-          <h2 className="heading heading-4">Quick Actions</h2>
-          <Button variant="ghost" className="p-1 h-8 w-8 rounded-full hover:bg-glass-bg">
-            {isQuickActionsCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
-          </Button>
-        </div>
-        
-        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isQuickActionsCollapsed ? 'max-h-0 opacity-0' : 'max-h-96 opacity-100'}`}>
-          {/* Status Message */}
-          {importStatus && (
-            <div className="mb-4 mt-4 p-3 bg-accent-primary/20 border border-accent-primary/30 rounded-lg">
-              <p className="body-small text-accent-primary">{importStatus}</p>
-            </div>
-          )}
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-4 mt-4">
-            <Button 
-              className="btn btn-primary w-full max-w-[250px] mx-auto h-14"
-              onClick={() => setActiveView('create')}
-            >
-              <Plus className="w-4 h-4" />
-              Create Workout
-            </Button>
-            
-            <Button 
-              className="btn w-full max-w-[250px] mx-auto h-14"
-              onClick={() => document.getElementById('import-json-input').click()}
-            >
-              <Download className="w-4 h-4" />
-              Import JSON
-            </Button>
-            <input 
-              id="import-json-input"
-              type="file" 
-              accept=".json" 
-              onChange={handleImportJSON}
-              className="hidden"
-            />
-            
-            <Button 
-              className="btn w-full max-w-[250px] mx-auto h-14"
-              onClick={handleExportJSON}
-              disabled={workouts.length === 0}
-            >
-              <Upload className="w-4 h-4" />
-              Export JSON
-            </Button>
-            
-            <Button 
-              className="btn w-full max-w-[250px] mx-auto h-14"
-              onClick={handleExportText}
-              disabled={workouts.length === 0}
-            >
-              <Upload className="w-4 h-4" />
-              Export Text
-            </Button>
-          </div>
-          
-          {/* Additional Actions */}
-          {workouts.length > 0 && (
-            <div className="border-t border-glass-border pt-4">
-              <Button 
-                className="btn text-red-400 border-red-400 hover:bg-red-400 hover:text-white"
-                onClick={handleClearAllWorkouts}
-              >
-                Clear All Workouts
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* Workouts List */}
-      <div className="glass-card p-6">
-        <h2 className="heading heading-4 mb-4">Your Workouts</h2>
+      <div className="glass-card p-6 relative">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="heading heading-4">Your Workouts</h2>
+          
+          {workouts.length > 0 && (
+            <div className="flex gap-2">
+              <Button 
+                className="btn btn-primary"
+                onClick={() => setActiveView('create')}
+              >
+                <Plus className="w-4 h-4" />
+                New Workout
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button className="btn">
+                    <Download className="w-4 h-4" />
+                    Import
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="glass-card border border-glass-border">
+                  <DropdownMenuItem 
+                    onClick={() => document.getElementById('import-json-input').click()}
+                    className="cursor-pointer"
+                  >
+                    <FileJson className="mr-2 h-4 w-4" />
+                    Import from JSON
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <input 
+                id="import-json-input"
+                type="file" 
+                accept=".json" 
+                onChange={handleImportJSON}
+                className="hidden"
+              />
+            </div>
+          )}
+        </div>
         
         {workouts.length === 0 ? (
           <div className="text-center py-8">
@@ -455,13 +418,29 @@ function DashboardView({ workouts, setActiveView, setWorkouts, startWorkout, edi
             <p className="body-base text-muted-foreground mb-4">
               Create your first workout to get started with your fitness journey.
             </p>
-            <Button 
-              className="btn btn-primary"
-              onClick={() => setActiveView('create')}
-            >
-              <Plus className="w-4 h-4" />
-              Create Your First Workout
-            </Button>
+            <div className="flex gap-3 justify-center">
+              <Button 
+                className="btn btn-primary"
+                onClick={() => setActiveView('create')}
+              >
+                <Plus className="w-4 h-4" />
+                Create Your First Workout
+              </Button>
+              <Button 
+                className="btn"
+                onClick={() => document.getElementById('import-json-input').click()}
+              >
+                <Download className="w-4 h-4" />
+                Import JSON
+              </Button>
+              <input 
+                id="import-json-input"
+                type="file" 
+                accept=".json" 
+                onChange={handleImportJSON}
+                className="hidden"
+              />
+            </div>
           </div>
         ) : (
           <div className="grid gap-4">
@@ -473,6 +452,9 @@ function DashboardView({ workouts, setActiveView, setWorkouts, startWorkout, edi
                 onEdit={() => {
                   setEditingWorkout(workout)
                   setActiveView('create')
+                }}
+                onDelete={(id) => {
+                  setWorkouts(prev => prev.filter(w => w.id !== id))
                 }}
               />
             ))}
@@ -506,7 +488,7 @@ function DashboardView({ workouts, setActiveView, setWorkouts, startWorkout, edi
 }
 
 // Workout Card Component
-function WorkoutCard({ workout, onStart, onEdit }) {
+function WorkoutCard({ workout, onStart, onEdit, onDelete }) {
   const totalExercises = workout.exercises?.length || 0
   const estimatedTime = workout.exercises?.reduce((total, exercise) => {
     const setTime = (exercise.duration || 30) * exercise.sets
@@ -571,6 +553,12 @@ function WorkoutCard({ workout, onStart, onEdit }) {
     }
   }
 
+  const handleDelete = () => {
+    if (window.confirm(`Are you sure you want to delete "${workout.name}"? This action cannot be undone.`)) {
+      onDelete(workout.id)
+    }
+  }
+
   return (
     <div className="glass-card p-4 hover:scale-[1.01] transition-transform relative">
       {/* Export Dropdown - Top Right Corner */}
@@ -589,6 +577,10 @@ function WorkoutCard({ workout, onStart, onEdit }) {
             <DropdownMenuItem onClick={handleExportText} className="cursor-pointer">
               <FileText className="mr-2 h-4 w-4" />
               Export as Text
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDelete} className="cursor-pointer text-red-500 hover:text-red-400">
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete Workout
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -644,6 +636,7 @@ function CreateWorkoutView({ setActiveView, workouts, setWorkouts, setFullscreen
   const [workoutName, setWorkoutName] = useState('')
   const [exercises, setExercises] = useState([])
   const [editingIndex, setEditingIndex] = useState(-1)
+  const [draggedIndex, setDraggedIndex] = useState(null)
 
   // Initialize form with existing workout data when editing
   useEffect(() => {
@@ -681,6 +674,38 @@ function CreateWorkoutView({ setActiveView, workouts, setWorkouts, setFullscreen
     const updatedExercises = exercises.filter((_, i) => i !== index)
     setExercises(updatedExercises)
     if (editingIndex === index) setEditingIndex(-1)
+  }
+
+  // Drag and drop functions
+  const handleDragStart = (e, index) => {
+    setDraggedIndex(index)
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleDragOver = (e) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+  }
+
+  const handleDrop = (e, dropIndex) => {
+    e.preventDefault()
+    if (draggedIndex === null || draggedIndex === dropIndex) return
+
+    const updatedExercises = [...exercises]
+    const draggedExercise = updatedExercises[draggedIndex]
+    
+    // Remove the dragged item
+    updatedExercises.splice(draggedIndex, 1)
+    
+    // Insert at the new position
+    updatedExercises.splice(dropIndex, 0, draggedExercise)
+    
+    setExercises(updatedExercises)
+    setDraggedIndex(null)
+  }
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null)
   }
 
   const saveWorkout = () => {
@@ -753,7 +778,14 @@ function CreateWorkoutView({ setActiveView, workouts, setWorkouts, setFullscreen
       {/* Exercises List */}
       <div className="glass-card p-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="heading heading-4">Exercises ({exercises.length})</h3>
+          <div>
+            <h3 className="heading heading-4">Exercises ({exercises.length})</h3>
+            {exercises.length > 1 && (
+              <p className="body-small text-muted-foreground mt-1">
+                Drag exercises to reorder them
+              </p>
+            )}
+          </div>
           <Button className="btn btn-primary" onClick={addExercise}>
             <Plus className="w-4 h-4" />
             Add Exercise
@@ -772,17 +804,26 @@ function CreateWorkoutView({ setActiveView, workouts, setWorkouts, setFullscreen
         ) : (
           <div className="space-y-4">
             {exercises.map((exercise, index) => (
-              <ExerciseCard
+              <div
                 key={index}
-                exercise={exercise}
-                index={index}
-                isEditing={editingIndex === index}
-                onEdit={() => setEditingIndex(index)}
-                onSave={() => setEditingIndex(-1)}
-                onRemove={() => removeExercise(index)}
-                onUpdate={(field, value) => updateExercise(index, field, value)}
-                setFullscreenExercise={setFullscreenExercise}
-              />
+                draggable
+                onDragStart={(e) => handleDragStart(e, index)}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, index)}
+                onDragEnd={handleDragEnd}
+                className={`cursor-move transition-opacity ${draggedIndex === index ? 'opacity-50' : 'opacity-100'}`}
+              >
+                <ExerciseCard
+                  exercise={exercise}
+                  index={index}
+                  isEditing={editingIndex === index}
+                  onEdit={() => setEditingIndex(index)}
+                  onSave={() => setEditingIndex(-1)}
+                  onRemove={() => removeExercise(index)}
+                  onUpdate={(field, value) => updateExercise(index, field, value)}
+                  setFullscreenExercise={setFullscreenExercise}
+                />
+              </div>
             ))}
           </div>
         )}
@@ -952,22 +993,27 @@ function ExerciseCard({ exercise, index, isEditing, onEdit, onSave, onRemove, on
   return (
     <div className="glass-card p-4 hover:scale-[1.01] transition-transform relative">
       <div className="flex justify-between items-start">
-        <div className="flex-1 cursor-pointer" onClick={onEdit}>
-          <h4 className="heading heading-5 mb-1">{exercise.name || 'Untitled Exercise'}</h4>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 body-small text-muted-foreground">
-            <div>
-              <span className="font-medium">Type:</span> {exercise.type === 'reps' ? 'Repetitions' : 'Duration'}
-            </div>
-            <div>
-              <span className="font-medium">Sets:</span> {exercise.sets}
-            </div>
-            <div>
-              <span className="font-medium">
-                {exercise.type === 'reps' ? 'Reps:' : 'Duration:'}
-              </span> {exercise.type === 'reps' ? exercise.reps : `${exercise.duration}s`}
-            </div>
-            <div>
-              <span className="font-medium">Rest:</span> {exercise.restBetweenSets}s
+        <div className="flex items-start gap-3 flex-1">
+          <div className="flex-shrink-0 mt-1">
+            <GripVertical className="w-4 h-4 text-muted-foreground cursor-move" />
+          </div>
+          <div className="flex-1 cursor-pointer" onClick={onEdit}>
+            <h4 className="heading heading-5 mb-1">{exercise.name || 'Untitled Exercise'}</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 body-small text-muted-foreground">
+              <div>
+                <span className="font-medium">Type:</span> {exercise.type === 'reps' ? 'Repetitions' : 'Duration'}
+              </div>
+              <div>
+                <span className="font-medium">Sets:</span> {exercise.sets}
+              </div>
+              <div>
+                <span className="font-medium">
+                  {exercise.type === 'reps' ? 'Reps:' : 'Duration:'}
+                </span> {exercise.type === 'reps' ? exercise.reps : `${exercise.duration}s`}
+              </div>
+              <div>
+                <span className="font-medium">Rest:</span> {exercise.restBetweenSets}s
+              </div>
             </div>
           </div>
         </div>
