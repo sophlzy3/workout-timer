@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button.jsx'
+import { Button } from './components/ui/button.jsx'
 import { Timer, Plus, Download, Upload, Moon, Sun, Settings, MoreVertical, FileText, FileJson, ChevronDown, ChevronUp, Expand, GripVertical, Trash2 } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu.jsx'
+} from './components/ui/dropdown-menu.jsx'
 import './App.css'
 
 function App() {
