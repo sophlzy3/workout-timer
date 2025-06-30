@@ -73,7 +73,7 @@ function App() {
                   <text x="12" y="18" font-size="18" text-anchor="middle" fill="currentColor">🏋️</text>
                 </svg>
               </div>
-              <h1 className="heading heading-3 text-off-white">Workout Timer Pro</h1>
+              <h1 className="heading heading-3 text-off-white">Workout Timer</h1>
             </div>
             
             <div className="flex items-center gap-2">
@@ -349,7 +349,7 @@ function DashboardView({ workouts, setActiveView, setWorkouts, startWorkout, edi
     }
 
     try {
-      let textContent = '# Workout Timer Pro - Exported Workouts\n\n'
+      let textContent = '# Workout Timer - Exported Workouts\n\n'
       textContent += `Exported on: ${new Date().toLocaleDateString()}\n`
       textContent += `Total Workouts: ${workouts.length}\n\n`
       textContent += '---\n\n'

@@ -1,15 +1,13 @@
-# Workout Timer Pro 🏋️
+# Workout Timer 🏋️
+A modern, full-featured workout timer built with React, Vite, and Tailwind CSS.
 
-A modern, full-featured workout timer application with beautiful glassmorphism design. Built with React, Vite, and Tailwind CSS.
+[dark mode](/public/screenshots/preview_dark.png)
+[light mode screenshot](/public/screenshots/preview_light.png)
 
 ## ✨ Features
-
-### 🎯 Core Functionality
-- **Workout Creation**: Create custom workouts with multiple exercises
-- **Timer System**: Automatic timing for duration-based exercises
-- **Repetition Tracking**: Manual completion for rep-based exercises
-- **Rest Periods**: Configurable rest times between sets and exercises
-- **Live Workout Mode**: Real-time workout tracking with phase transitions
+- Create custom workouts with multiple exercises
+- Configurable rest times between sets and exercises
+- Real-time workout tracking with phase transitions
 
 ### Creating a Workout
 1. Click "Create Workout" in the Quick Actions section
@@ -23,21 +21,12 @@ A modern, full-featured workout timer application with beautiful glassmorphism d
    - **Rest Times**: Rest between sets and after exercise
    - **Media URL**: Optional link to exercise demonstration
 
-### Starting a Workout
-1. From the dashboard, click "Start" on any workout card
-2. The workout begins with a 5-second warmup
-3. Follow the on-screen prompts for each phase:
-   - **Exercise Phase**: Complete the exercise
-   - **Rest Phase**: Take your rest period
-   - **Complete**: Workout finished!
-
 ### Managing Workouts
 - **Edit**: Click "Edit" on any workout card
 - **Export**: Use the dropdown menu on workout cards to export individual workouts
 - **Bulk Export**: Use Quick Actions to export all workouts
 - **Import**: Use Quick Actions to import workout files
 
-- 
 ### 📊 Workout Management
 - **Import/Export**: JSON and text format support
 - **Workout Library**: Save and organize multiple workouts
@@ -60,7 +49,7 @@ A modern, full-featured workout timer application with beautiful glassmorphism d
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/workout-timer-pro.git
+   git clone https://github.com/sophlzy3/workout-timer-pro.git
    cd workout-timer-pro
    ```
 

@@ -1,4 +1,4 @@
-# Workout Timer Pro - Dockerfile
+# Workout Timer - Dockerfile
 # Multi-stage build for optimized production image
 
 # Build stage

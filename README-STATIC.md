@@ -1,6 +1,6 @@
-# Workout Timer Pro - Static Export 🏋️
+# Workout Timer - Static Export 🏋️
 
-This branch contains the static export of Workout Timer Pro, ready for deployment to any static hosting service.
+This branch contains the static export of Workout Timer, ready for deployment to any static hosting service.
 
 ## 🚀 Quick Deploy
 

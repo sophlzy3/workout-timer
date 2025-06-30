@@ -5,15 +5,15 @@
   "private": true,
   "type": "module",
   "keywords": ["workout", "timer", "fitness", "react", "glassmorphism", "exercise"],
-  "author": "Workout Timer Pro Team",
-  "license": "MIT",
-  "homepage": "https://github.com/your-username/workout-timer-pro",
+  "author": "Sophie Liu",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/sophlzy3/workout-timer",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/workout-timer-pro.git"
+    "url": "https://github.com/sophlzy3/workout-timer-pro.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/workout-timer-pro/issues"
+    "url": "https://github.com/sophlzy3/workout-timer-pro/issues"
   },
   "scripts": {
     "dev": "vite --host 0.0.0.0",

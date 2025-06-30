@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Deploy script for Workout Timer Pro
+# Deploy script for Workout Timer
 # This script handles the differences between main and static-export branches
 
 echo "🚀 Starting deployment process..."
