@@ -4,9 +4,7 @@ This branch contains the static export of Workout Timer Pro, ready for deploymen
 
 ## 🚀 Quick Deploy
 ### workflow
-git checkout static-export
-git merge main
-git push origin static-export
+./deploy.sh
 
 
 ### GitHub Pages
