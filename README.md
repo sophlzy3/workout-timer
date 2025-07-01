@@ -1,7 +1,7 @@
 # Workout Timer 🏋️
 <p float="left">
-  <img src="/public/screenshots/preview_dark.png" width="500" />
-  <img src="/public/screenshots/preview_light.png" width="500" /> 
+  <img src="/public/screenshots/preview_dark.png" width="300" />
+  <img src="/public/screenshots/preview_light.png" width="300" /> 
 </p>
 
 ## ✨ Features
