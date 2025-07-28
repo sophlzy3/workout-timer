@@ -1125,7 +1125,7 @@ function WorkoutView({ workout, setActiveView, setWorkouts }) {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0)
   const [currentSetIndex, setCurrentSetIndex] = useState(0)
   const [currentPhase, setCurrentPhase] = useState('warmup') // warmup, exercise, rest, complete
-  const [timeRemaining, setTimeRemaining] = useState(5) // Start with 5-second warmup
+  const [timeRemaining, setTimeRemaining] = useState(10) // Start with 5-second warmup
   const [isRunning, setIsRunning] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [workoutStartTime, setWorkoutStartTime] = useState(null)
@@ -1220,6 +1220,17 @@ function WorkoutView({ workout, setActiveView, setWorkouts }) {
     setIsRunning(true)
     setWorkoutStartTime(Date.now())
   }
+
+  // Auto-start the workout when component mounts
+  useEffect(() => {
+    // Start the workout automatically after a brief delay
+    const timer = setTimeout(() => {
+      setIsRunning(true)
+      setWorkoutStartTime(Date.now())
+    }, 1000) // 1 second delay to let the UI render
+
+    return () => clearTimeout(timer)
+  }, []) // Empty dependency array means this runs once when component mounts
 
   const pauseWorkout = () => {
     setIsPaused(!isPaused)
@@ -1317,22 +1328,42 @@ function WorkoutView({ workout, setActiveView, setWorkouts }) {
             {getPhaseSubtitle()}
           </p>
 
-          {/* Timer Display */}
-          {(currentPhase === 'warmup' || currentPhase === 'rest' || (currentPhase === 'exercise' && currentExercise.type === 'duration')) && (
+          {/* Timer Display Logic */}
+          {(currentPhase === 'warmup'
+            || currentPhase === 'rest'
+            || (currentPhase === 'exercise' && currentExercise?.type === 'duration')) && (
+            
+              
+            
             <div className="mb-8">
               <div className={`text-8xl font-bold mb-4 ${getPhaseColor()}`}>
                 {formatTime(timeRemaining)}
               </div>
               <div className="w-full bg-glass-bg rounded-full h-4 mb-4">
-                <div 
-                  className={`h-4 rounded-full transition-all duration-1000 ${
+                <div
+                  key={`${currentPhase}-${currentExerciseIndex}-${currentSetIndex}`}
+                  className={`h-4 rounded-full transition-all duration-1000 ease-linear ${
                     currentPhase === 'warmup' ? 'bg-yellow-400' :
-                    currentPhase === 'exercise' ? 'bg-accent-primary' : 'bg-blue-400'
+                    currentPhase === 'exercise' ? 'bg-accent-primary' :
+                    'bg-blue-400'
                   }`}
-                  style={{ 
-                    width: `${currentPhase === 'warmup' ? ((5 - timeRemaining) / 5) * 100 :
-                           currentPhase === 'exercise' ? ((currentExercise.duration - timeRemaining) / currentExercise.duration) * 100 :
-                           currentPhase === 'rest' ? ((currentExercise.restBetweenSets - timeRemaining) / currentExercise.restBetweenSets) * 100 : 0}%` 
+                  style={{
+                    width: `${(() => {
+                      if (currentPhase === 'warmup') {
+                        return Math.max(100 - (timeRemaining / 10) * 100, 0);
+                      }
+                      if (currentExercise?.type === 'duration') {
+                        return Math.max(100 - (timeRemaining / currentExercise.duration) * 100, 0);
+                      }
+                      if (currentPhase === 'rest' && currentExercise) {
+                        const restDuration = currentSetIndex < currentExercise.sets - 1 
+                          ? currentExercise.restBetweenSets 
+                          : currentExercise.restBetweenExercises;
+                        return Math.max(100 - (timeRemaining / restDuration) * 100, 0);
+                      }
+                      return 0;
+                    })()}%`,
+                    minWidth: '1px'
                   }}
                 />
               </div>
@@ -1340,7 +1371,7 @@ function WorkoutView({ workout, setActiveView, setWorkouts }) {
           )}
 
           {/* Reps Exercise Interface */}
-          {currentPhase === 'exercise' && currentExercise.type === 'reps' && (
+          {currentPhase === 'exercise' && currentExercise?.type === 'reps' && (
             <div className="mb-8">
               <div className="text-6xl font-bold text-accent-primary mb-4">
                 {currentExercise.reps}
@@ -1400,12 +1431,6 @@ function WorkoutView({ workout, setActiveView, setWorkouts }) {
 
           {/* Control Buttons */}
           <div className="flex justify-center gap-4">
-            {!isRunning && currentPhase === 'warmup' && (
-              <Button className="btn btn-primary text-xl px-8 py-4" onClick={startWorkout}>
-                Start Workout
-              </Button>
-            )}
-            
             {isRunning && currentPhase !== 'complete' && (
               <>
                 <Button className="btn text-xl px-6 py-3" onClick={pauseWorkout}>

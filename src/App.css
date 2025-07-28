@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Inter:wght@400;500&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
@@ -118,9 +119,6 @@
     @apply bg-background text-foreground;
   }
 }
-
-/* Import Google Fonts for Typography */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Inter:wght@400;500&display=swap');
 
 /* Glassmorphism Color Palette and Custom Properties */
 :root {
@@ -496,5 +494,46 @@ body {
   .btn {
     padding: var(--space-1) var(--space-2);
   }
+}
+
+/* Progress bar animations for different durations */
+@keyframes progress-10s {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+@keyframes progress-15s {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+@keyframes progress-20s {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+@keyframes progress-30s {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+@keyframes progress-45s {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+@keyframes progress-60s {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+@keyframes progress-90s {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+@keyframes progress-120s {
+  from { width: 0%; }
+  to { width: 100%; }
 }
 
